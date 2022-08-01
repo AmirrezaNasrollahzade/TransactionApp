@@ -2,23 +2,37 @@
 
 import 'package:flutter/material.dart';
 
-class AddNewTransaction extends StatelessWidget {
+class AddNewTransaction extends StatefulWidget {
   final Function? addNewTransaction;
+
+  const AddNewTransaction({required this.addNewTransaction, Key? key})
+      : super(key: key);
+
+  @override
+  State<AddNewTransaction> createState() => _AddNewTransactionState();
+}
+
+class _AddNewTransactionState extends State<AddNewTransaction> {
   int id = 0;
+
   TextEditingController titleController = TextEditingController();
 
   TextEditingController amountController = TextEditingController();
 
-  AddNewTransaction({required this.addNewTransaction, Key? key})
-      : super(key: key);
-
   void submitData() {
     final String title = titleController.text;
-    final double amount = double.parse(amountController.text);
+    final double amount;
+    if (amountController.text == "") {
+      amount = 0;
+    } else {
+      amount = double.parse(amountController.text);
+    }
+
     if (title.isEmpty || amount <= 0) {
       return;
     }
-    addNewTransaction!(title, amount.toString());
+    widget.addNewTransaction!(title, amount.toString());
+    Navigator.of(context).pop();
   }
 
   @override
@@ -33,7 +47,7 @@ class AddNewTransaction extends StatelessWidget {
           children: [
             //Title TextField
             TextField(
-              onSubmitted: (_) => submitData,
+              onSubmitted: (_) => submitData, //submitData Function
               controller: titleController,
               decoration: InputDecoration(
                 labelText: 'Title',
@@ -49,7 +63,7 @@ class AddNewTransaction extends StatelessWidget {
             ),
             //Amount TextField
             TextField(
-              onSubmitted: (_) => submitData,
+              onSubmitted: (_) => submitData, //submitData Function
               keyboardType: TextInputType.number,
               controller: amountController,
               decoration: InputDecoration(
