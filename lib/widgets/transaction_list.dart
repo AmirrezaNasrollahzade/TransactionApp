@@ -46,4 +46,3 @@ class TransactionList extends StatelessWidget {
           );
   }
 }
-// '\$${transactions[index].amount}', //Value amount
