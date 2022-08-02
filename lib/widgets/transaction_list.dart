@@ -6,7 +6,12 @@ import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
-  const TransactionList({required this.transactions});
+  final Function? removeIndex;
+  final Function? removeId;
+  const TransactionList(
+      {required this.removeId,
+      required this.removeIndex,
+      required this.transactions});
   @override
   Widget build(BuildContext context) {
     return transactions.isEmpty
@@ -15,15 +20,11 @@ class TransactionList extends StatelessWidget {
           )
         : Expanded(
             child: ListView.builder(
-                // scrollDirection: Axis.horizontal,
                 itemCount: transactions.length,
-                // children: transactions.map((value) {
                 itemBuilder: (ctx, index) {
                   return Card(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 8,
-                    ),
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
                     child: ListTile(
                       leading: CircleAvatar(
                         radius: 30,
@@ -40,6 +41,15 @@ class TransactionList extends StatelessWidget {
                       ),
                       subtitle: Text(
                           DateFormat.yMMMd().format(transactions[index].date)),
+                      trailing: IconButton(
+                        onPressed: () => removeId!(
+                            transactions[index].id), //removeIndex!(index),
+
+                        icon: Icon(
+                          Icons.delete,
+                          color: Theme.of(context).errorColor,
+                        ),
+                      ),
                     ),
                   );
                 }),

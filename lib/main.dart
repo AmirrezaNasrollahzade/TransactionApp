@@ -78,6 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
               //Show list of the Transactions
               TransactionList(
                 transactions: transactions,
+                removeIndex: removeIndex,
+                removeId: removeId,
               ),
             ],
           ),
@@ -85,7 +87,21 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
   //Functions
+  //function remove transaction with .removeWhere
+  void removeId(String id) {
+    setState(() {
+      transactions.removeWhere((element) => element.id == id);
+    });
+  }
+
+  //function remove transaction with index Transaction
+  void removeIndex(int index) {
+    setState(() {
+      transactions.removeAt(index);
+    });
+  }
 
   //function _recentTransactions list.where(){} nd .isAfter()
   List<Transaction> get _recentTransactions {
