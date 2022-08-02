@@ -75,6 +75,8 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               //Chart
               Chart(recentTransactions: _recentTransactions),
+              //SizedBox
+              const SizedBox(height: 20),
               //Show list of the Transactions
               TransactionList(
                 transactions: transactions,
@@ -119,6 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: txTitle,
         amount: double.parse(txAmount),
         date: chosenDate);
+    print('id :${newTx.id}');
     setState(() {
       transactions.add(newTx);
     });

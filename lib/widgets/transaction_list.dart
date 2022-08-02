@@ -15,8 +15,20 @@ class TransactionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return transactions.isEmpty
-        ? Flexible(
-            child: Image.asset('assets/images/waiting.png'),
+        ? const Expanded(
+            child: Center(
+              child: Padding(
+                  padding: EdgeInsets.all(4),
+                  child: SizedBox(
+                    height: 100,
+                    width: 100,
+                    child: CircularProgressIndicator(
+                      color: Colors.blue,
+                      // semanticsLabel: 'Nothing!',
+                      // semanticsValue: 'Nothing Here !',
+                    ),
+                  )),
+            ),
           )
         : Expanded(
             child: ListView.builder(
