@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, file_names
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -33,11 +33,13 @@ class Chart extends StatelessWidget {
     );
   }
 
+  //با کمک DateTime.Now() و توابع آن هفته گذشته رو درست میکند
   //List of the Data Chart Function
   List<Map<String, Object>> get groupedTransactionsValues {
     return List.generate(7, (index) {
       //create past days with index
-      final weekDay = DateTime.now().subtract(Duration(days: index));
+      final weekDay =
+          DateTime.now().subtract(Duration(days: index)); //نکته بسیار مهم
       double totalSum = 0.0;
       //بررسی مطابقت  date transaction  با weekDay جهت ریختن مقادیر در  totalSum
       for (int i = 0; i < recentTransactions.length; i++) {

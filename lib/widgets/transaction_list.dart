@@ -1,20 +1,21 @@
 // ignore_for_file: use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../models/transaction.dart';
 import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
-  final List<Transaction> transactions;
+  final Box<Transaction> boxTransaction;
   final Function? removeIndex;
   final Function? removeId;
   const TransactionList(
       {required this.removeId,
       required this.removeIndex,
-      required this.transactions});
+      required this.boxTransaction});
   @override
   Widget build(BuildContext context) {
-    return transactions.isEmpty
+    return boxTransaction.isEmpty
         ? const Expanded(
             child: Center(
               child: Padding(
@@ -32,7 +33,7 @@ class TransactionList extends StatelessWidget {
           )
         : Expanded(
             child: ListView.builder(
-                itemCount: transactions.length,
+                itemCount: boxTransaction.length,
                 itemBuilder: (ctx, index) {
                   return Card(
                     margin:
@@ -43,20 +44,21 @@ class TransactionList extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(6),
                           child: FittedBox(
-                            child: Text('\$${transactions[index].amount}'),
+                            child: Text(
+                                '\$${boxTransaction.getAt(index)!.amount}'),
                           ),
                         ),
                       ),
                       title: Text(
-                        transactions[index].title,
+                        boxTransaction.getAt(index)!.title,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      subtitle: Text(
-                          DateFormat.yMMMd().format(transactions[index].date)),
+                      subtitle: Text(DateFormat.yMMMd()
+                          .format(boxTransaction.getAt(index)!.date)),
                       trailing: IconButton(
-                        onPressed: () => removeId!(
-                            transactions[index].id), //removeIndex!(index),
-
+                        onPressed: () => removeId!(boxTransaction
+                            .getAt(index)!
+                            .id), //removeIndex!(index)
                         icon: Icon(
                           Icons.delete,
                           color: Theme.of(context).errorColor,
@@ -68,3 +70,7 @@ class TransactionList extends StatelessWidget {
           );
   }
 }
+/*
+() => removeId!(
+                            transactions[index].id), //removeIndex!(index),
+*/

@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:transactions/widgets/AddNewTransaction.dart';
 import 'package:transactions/widgets/Chart.dart';
-
+import 'package:hive_flutter/hive_flutter.dart';
 import 'models/transaction.dart';
 import 'widgets/transaction_list.dart';
 
-void main() => runApp(const MyApp());
+const String transactionBox = "transaction";
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(TransactionAdapter());
+  await Hive.openBox<Transaction>(transactionBox);
+  runApp(const MyApp());
+}
 
 // state MyApp
 class MyApp extends StatelessWidget {
@@ -41,7 +48,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   //list of the Transaction
-  final List<Transaction> transactions = [];
+  final List<Transaction> transactionsList = [];
+  final myBox = Hive.box<Transaction>(transactionBox);
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(height: 20),
               //Show list of the Transactions
               TransactionList(
-                transactions: transactions,
+                boxTransaction: myBox,
                 removeIndex: removeIndex,
                 removeId: removeId,
               ),
@@ -91,23 +99,29 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   //Functions
+
   //function remove transaction with .removeWhere
-  void removeId(String id) {
-    setState(() {
-      transactions.removeWhere((element) => element.id == id);
-    });
+  void removeId(String id) async {
+    //transactionsList.removeWhere((element) => element.id == id);
+    for (int i = 0; i < myBox.length; i++) {
+      Transaction? transactionIndex = myBox.getAt(i);
+      if (transactionIndex!.id == id) {
+        await myBox.deleteAt(i);
+      }
+    }
+    setState(() {});
   }
 
   //function remove transaction with index Transaction
   void removeIndex(int index) {
     setState(() {
-      transactions.removeAt(index);
+      transactionsList.removeAt(index);
     });
   }
 
   //function _recentTransactions list.where(){} nd .isAfter()
   List<Transaction> get _recentTransactions {
-    return transactions.where((test) {
+    return transactionsList.where((test) {
       return test.date
           .isAfter(DateTime.now().subtract(const Duration(days: 7)));
     }).toList();
@@ -115,16 +129,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //Function _addNewTransaction
   void _addNewTransaction(
-      String txTitle, String txAmount, DateTime chosenDate) {
+    String txTitle,
+    String txAmount,
+    DateTime chosenDate,
+  ) async {
     final Transaction newTx = Transaction(
         id: DateTime.now().toString(),
         title: txTitle,
         amount: double.parse(txAmount),
         date: chosenDate);
-    print('id :${newTx.id}');
-    setState(() {
-      transactions.add(newTx);
-    });
+    await myBox.add(newTx);
+    setState(() {});
   }
 
   //Function _startAddNewTransaction
